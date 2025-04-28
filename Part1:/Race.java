@@ -9,11 +9,13 @@ import java.util.concurrent.TimeUnit;
  */
 public class Race
 {
+
     private int raceLength;
     private Horse lane1Horse;
     private Horse lane2Horse;
     private Horse lane3Horse;
-
+    
+    
     /**
      * Constructor for objects of class Race
      * Initially there are no horses in the lanes
@@ -28,6 +30,13 @@ public class Race
         lane2Horse = null;
         lane3Horse = null;
     }
+    
+    private boolean allHorsesFallen(){
+        return lane1Horse != null && lane1Horse.hasFallen() &&
+            lane2Horse != null && lane2Horse.hasFallen() &&
+            lane3Horse != null && lane3Horse.hasFallen();
+    }
+    
     
     /**
      * Adds a horse to the race in a given lane
@@ -51,7 +60,7 @@ public class Race
         }
         else
         {
-            System.out.println("Cannot add horse to lane " + laneNumber + " because there is no such lane");
+            System.out.println("Not possible to add horse to " + laneNumber);
         }
     }
     
@@ -63,14 +72,13 @@ public class Race
      */
     public void startRace()
     {
-        //declare a local variable to tell us when the race is finished
-        boolean finished = false;
+    
+        boolean finished = false; // tells user that race is finished
         
         Horse winningHorse = null;  //tracking the winner
         
-        //reset all the lanes (all horses not fallen and back to 0). 
         lane1Horse.goBackToStart();
-        lane2Horse.goBackToStart();
+        lane2Horse.goBackToStart();   // resetting everything
         lane3Horse.goBackToStart();
                       
         while (!finished)
@@ -101,7 +109,12 @@ public class Race
                     winningHorse = lane3Horse;
                 }
             }
-           
+            else if (allHorsesFallen()){
+                System.out.println("All horses have fallen. No winner.");
+                finished = true; //if all the horses fell finish race
+            }
+
+
             //wait for 100 milliseconds
             try{ 
                 TimeUnit.MILLISECONDS.sleep(100);

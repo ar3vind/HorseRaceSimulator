@@ -66,61 +66,75 @@ public class Race
      * race is finished
      */
     public void startRace()
+{
+    boolean finished = false; // tells user that race is finished
+    Horse winningHorse = null;  // tracking the winner
+
+    lane1Horse.goBackToStart();
+    lane2Horse.goBackToStart();   // resetting everything
+    lane3Horse.goBackToStart();
+                  
+    while (true)  // changed to true so I can use break statements
     {
-    
-        boolean finished = false; // tells user that race is finished
+        // move each horse
+        moveHorse(lane1Horse);
+        moveHorse(lane2Horse);
+        moveHorse(lane3Horse);
+                    
+        printRace();
         
-        Horse winningHorse = null;  //tracking the winner
-        
-        lane1Horse.goBackToStart();
-        lane2Horse.goBackToStart();   // resetting everything
-        lane3Horse.goBackToStart();
-                      
-        while (true)  //changed to true so I can use break statements
-        {
-            //move each horse
-            moveHorse(lane1Horse);
-            moveHorse(lane2Horse);
-            moveHorse(lane3Horse);
-                        
-            printRace();
-            
-            if (allHorsesFallen()) {
-                System.out.println("All the horses fell.  No winner :(");
-                return;
-            }
-
-
-            //if any of the three horses has won the race is finished
-            if ( raceWonBy(lane1Horse) || raceWonBy(lane2Horse) || raceWonBy(lane3Horse) || allHorsesFallen())
-            {
-                finished = true;
-
-                if (raceWonBy(lane1Horse))
-                {
-                    winningHorse = lane1Horse;
-                }
-                else if (raceWonBy(lane2Horse))
-                {
-                    winningHorse = lane2Horse;
-                }
-                else 
-                {
-                    winningHorse = lane3Horse;
-                }
-            
-
-            System.out.println("The winner is " + winningHorse.getName() + "!!!!!");
+        if (allHorsesFallen()) {
+            System.out.println("All the horses fell. No winner :(");
+            printHorseConfidence(); // Print confidence after the race
             return;
-            }
-
-
-            //wait for 100 milliseconds
-            try{ 
-                TimeUnit.MILLISECONDS.sleep(100);
-            }catch(InterruptedException e){}
         }
+
+        // if any of the three horses has won the race is finished
+        if (raceWonBy(lane1Horse) || raceWonBy(lane2Horse) || raceWonBy(lane3Horse))
+        {
+            finished = true;
+
+            if (raceWonBy(lane1Horse))
+            {
+                winningHorse = lane1Horse;
+            }
+            else if (raceWonBy(lane2Horse))
+            {
+                winningHorse = lane2Horse;
+            }
+            else 
+            {
+                winningHorse = lane3Horse;
+            }
+        
+            System.out.println("The winner is " + winningHorse.getName() + "!!!!!");
+            printHorseConfidence(); // Print confidence after the race
+            return;
+        }
+
+        // wait for 100 milliseconds
+        try { 
+            TimeUnit.MILLISECONDS.sleep(100);
+        } catch (InterruptedException e) {}
     }
+}
+
+/**
+ * Print the confidence of each horse after the race.
+ */
+private void printHorseConfidence()
+{
+    System.out.println("\nHorse Confidence Levels:");
+    if (lane1Horse != null) {
+        System.out.println("Lane 1 Horse (" + lane1Horse.getName() + "): " + lane1Horse.getConfidence());
+    }
+    if (lane2Horse != null) {
+        System.out.println("Lane 2 Horse (" + lane2Horse.getName() + "): " + lane2Horse.getConfidence());
+    }
+    if (lane3Horse != null) {
+        System.out.println("Lane 3 Horse (" + lane3Horse.getName() + "): " + lane3Horse.getConfidence());
+    }
+}
     
     private boolean allHorsesFallen(){                       // what if all horses fall
         return lane1Horse != null && lane1Horse.hasFallen() &&

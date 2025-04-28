@@ -31,11 +31,6 @@ public class Race
         lane3Horse = null;
     }
     
-    private boolean allHorsesFallen(){
-        return lane1Horse != null && lane1Horse.hasFallen() &&
-            lane2Horse != null && lane2Horse.hasFallen() &&
-            lane3Horse != null && lane3Horse.hasFallen();
-    }
     
     
     /**
@@ -81,18 +76,23 @@ public class Race
         lane2Horse.goBackToStart();   // resetting everything
         lane3Horse.goBackToStart();
                       
-        while (!finished)
+        while (true)  //changed to true so I can use break statements
         {
             //move each horse
             moveHorse(lane1Horse);
             moveHorse(lane2Horse);
             moveHorse(lane3Horse);
                         
-            //print the race positions
             printRace();
             
+            if (allHorsesFallen()) {
+                System.out.println("All the horses fell.  No winner :(");
+                return;
+            }
+
+
             //if any of the three horses has won the race is finished
-            if ( raceWonBy(lane1Horse) || raceWonBy(lane2Horse) || raceWonBy(lane3Horse) )
+            if ( raceWonBy(lane1Horse) || raceWonBy(lane2Horse) || raceWonBy(lane3Horse) || allHorsesFallen())
             {
                 finished = true;
 
@@ -104,27 +104,28 @@ public class Race
                 {
                     winningHorse = lane2Horse;
                 }
-                else if (raceWonBy(lane3Horse))
+                else 
                 {
                     winningHorse = lane3Horse;
                 }
-            }
-            else if (allHorsesFallen()){
-                System.out.println("All horses have fallen. No winner.");
-                finished = true; //if all the horses fell finish race
+            
+
+            System.out.println("The winner is " + winningHorse.getName() + "!!!!!");
+            return;
             }
 
 
             //wait for 100 milliseconds
             try{ 
                 TimeUnit.MILLISECONDS.sleep(100);
-            }catch(Exception e){}
+            }catch(InterruptedException e){}
         }
-
-        if (winningHorse != null)
-        {
-            System.out.println("The winner is " + winningHorse.getName() + "!!!!!");
-        }
+    }
+    
+    private boolean allHorsesFallen(){                       // what if all horses fall
+        return lane1Horse != null && lane1Horse.hasFallen() &&
+            lane2Horse != null && lane2Horse.hasFallen() &&
+            lane3Horse != null && lane3Horse.hasFallen();
     }
     
     /**
